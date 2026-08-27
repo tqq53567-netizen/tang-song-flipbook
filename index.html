@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>唐风 · 宋韵 | 八大古法妆容复原图集</title>
+<link rel="preload" as="image" href="images/cover.webp?v=2">
 <style>
   :root{
     --w: 680px; --h: 960px;
@@ -200,7 +201,9 @@
   #loader{ position:fixed; inset:0; z-index:99;
     background:linear-gradient(165deg,#1a2237,#0e1424);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
-    transition:opacity .7s; }
+    transition:opacity .7s;
+    animation:loaderKill .8s ease 7s forwards; }
+  @keyframes loaderKill{ to{ opacity:0; visibility:hidden; } }
   #loader.off{ opacity:0; pointer-events:none; }
   #loader .seal{ width:64px; height:64px; border:1px solid rgba(201,163,90,.6);
     display:flex; align-items:center; justify-content:center;
@@ -215,9 +218,40 @@
   #loader .lb i{ display:block; height:100%; width:40%; background:var(--gold);
     animation:load 1.2s ease-in-out infinite; }
   @keyframes load{ 0%{ translate:-110% 0; } 100%{ translate:280% 0; } }
+
+  /* ---- 兼容旧内核：inset 回退为显式定位（现代浏览器不受影响） ---- */
+  .page,.face,.photo,.sheen,#loader,.dust,#petals,.front::before{ top:0;left:0;right:0;bottom:0; }
+  .frame{ top:14px;left:14px;right:14px;bottom:14px; }
+  .front img{ top:26px;left:26px;right:26px;bottom:26px; }
+  .page.hard .front img{ top:0;left:0;right:0;bottom:0; }
+  body.fs .front img{ top:8px;left:8px;right:8px;bottom:8px; }
+  .photo-ph{ top:3.2%;left:3.2%;right:3.2%;bottom:3.2%; }
+  .front.err::after{ top:0;left:0;right:0;bottom:0; }
+  .endin::after{ top:-45%;left:-45%;right:-45%;bottom:-45%; }
+  .stack::before{ top:5px;left:5px;right:-6px;bottom:-6px; }
+  .stack::after{ top:10px;left:10px;right:-11px;bottom:-11px; }
+  body.fs #bookWrap{ height:calc(100dvh - 72px); }
 </style>
 </head>
 <body>
+
+<script>
+/* 诊断条：脚本崩溃 / 资源加载失败时在顶部显示原因（最多 3 条） */
+window.__errCount = 0;
+window.addEventListener("error", function(e){
+  if (window.__errCount > 2) return;
+  window.__errCount++;
+  try {
+    var msg = e.message || e.type || "unknown";
+    var t = e.target;
+    if (t && (t.src || t.href)) msg = "资源加载失败: " + (t.src || t.href);
+    var d = document.createElement("div");
+    d.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:999;background:#8a2222;color:#fff;font:12px/1.6 monospace;padding:6px 10px;word-break:break-all";
+    d.textContent = msg;
+    (document.body || document.documentElement).appendChild(d);
+  } catch(_) {}
+}, true);
+</script>
 
 <div id="loader">
   <div class="seal kai">唐宋</div>
@@ -256,16 +290,16 @@
  *  图册配置：增删图片只改这里（第 1 张为封面，最后自动加封底）
  * ============================================================ */
 const IMGS = [
-  "images/cover.webp",
-  "images/02.webp","images/03.webp","images/04.webp","images/05.webp","images/06.webp",
-  "images/07.webp","images/08.webp","images/09.webp","images/10.webp",
-  "images/11.webp","images/12.webp","images/13.webp","images/14.webp",
-  "images/15.webp","images/16.webp","images/17.webp","images/18.webp",
-  "images/19.webp","images/20.webp",
-  "images/21.webp","images/22.webp","images/23.webp","images/24.webp",
-  "images/25.webp","images/26.webp","images/27.webp","images/28.webp",
-  "images/29.webp","images/30.webp","images/31.webp","images/32.webp",
-  "images/33.webp","images/34.webp","images/35.webp"
+  "images/cover.webp?v=2",
+  "images/02.webp?v=2","images/03.webp?v=2","images/04.webp?v=2","images/05.webp?v=2","images/06.webp?v=2",
+  "images/07.webp?v=2","images/08.webp?v=2","images/09.webp?v=2","images/10.webp?v=2",
+  "images/11.webp?v=2","images/12.webp?v=2","images/13.webp?v=2","images/14.webp?v=2",
+  "images/15.webp?v=2","images/16.webp?v=2","images/17.webp?v=2","images/18.webp?v=2",
+  "images/19.webp?v=2","images/20.webp?v=2",
+  "images/21.webp?v=2","images/22.webp?v=2","images/23.webp?v=2","images/24.webp?v=2",
+  "images/25.webp?v=2","images/26.webp?v=2","images/27.webp?v=2","images/28.webp?v=2",
+  "images/29.webp?v=2","images/30.webp?v=2","images/31.webp?v=2","images/32.webp?v=2",
+  "images/33.webp?v=2","images/34.webp?v=2","images/35.webp?v=2"
 ];
 
 /* ================= 以下为翻书引擎，无需改动 ================= */
@@ -319,7 +353,7 @@ pages.forEach((p, i) => {
   el.style.zIndex = N - i;
   const front = p.end
     ? `<div class="endin"><div class="et kai">完</div><div class="es">感 谢 翻 阅</div><div class="ee">THE TANG-SONG MAKEUP AESTHETICS MANUAL</div></div>`
-    : `<div class="spin"></div><img alt="" draggable="false">${i === 0 ? '<div class="sheen"></div>' : ''}`;
+    : `<div class="spin"></div><img alt="" draggable="false" decoding="async">${i === 0 ? '<div class="sheen"></div>' : ''}`;
   el.innerHTML = `<div class="face front">${front}</div><div class="face back"></div>`;
   book.appendChild(el);
   pageEls.push(el);
@@ -350,7 +384,7 @@ setTimeout(hideLoader, 3500);
 /* 页码标签：与图内印刷页码保持一致（cover=封面，末页=完） */
 const labels = ["封面"];
 IMGS.slice(1).forEach(s => {
-  const m = s.match(/(\d+)\.webp$/);
+  const m = s.match(/(\d+)\.webp/);
   labels.push(m ? String(+m[1]) : "");
 });
 labels.push("完");
