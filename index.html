@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -350,7 +350,7 @@ setTimeout(hideLoader, 3500);
 /* 页码标签：与图内印刷页码保持一致（cover=封面，末页=完） */
 const labels = ["封面"];
 IMGS.slice(1).forEach(s => {
-  const m = s.match(/(\d+)\.png$/);
+  const m = s.match(/(\d+)\.webp$/);
   labels.push(m ? String(+m[1]) : "");
 });
 labels.push("完");
